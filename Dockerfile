@@ -2,11 +2,11 @@ FROM python:3.6-stretch
 
 WORKDIR /home/posthop
 
-RUN apt-get install nginx
+RUN apt-get update && apt-get install -y nginx
 ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 ADD build/ .
 
 
-ENTRYPOINT ["python" "app.py"]
+CMD ["python", "app.py"]
 
