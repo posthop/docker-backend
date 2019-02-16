@@ -6,7 +6,7 @@ jobs:
         type: boolean
         default: false
     docker:
-      - image: docker:18
+      - image: debian:stretch
 
     working_directory: ~/repo
 
@@ -48,4 +48,4 @@ workflows:
           deploy: true
           filters:
             tags:
-              only: /.*/
+              only: /.+/
