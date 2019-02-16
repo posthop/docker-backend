@@ -24,7 +24,7 @@ jobs:
           command: docker build -t posthop-backend:latest .
   deploy:
     docker:
-      - image: google/cloud-sdk
+      - image: docker:18
     steps:
       - run: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
@@ -32,8 +32,7 @@ jobs:
           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 
       - run: gcloud auth configure-docker
-
-      - run: gcloud docker -- push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
+      - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
 
 workflows:
   version: 2.1
