@@ -17,7 +17,7 @@ jobs:
 
       - run:
           name: Installing git
-          command: apt-get update && apt-get install -y git
+          command: sudo apt-get update && sudo apt-get install -y git
 
       - run:
           name: Cloning source
@@ -51,3 +51,5 @@ workflows:
           filters:
             tags:
               only: /.+/
+            branches:
+              ignore: /.*/
