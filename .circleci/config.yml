@@ -1,10 +1,6 @@
 version: 2.1
 jobs:
   build:
-    parameters:
-      deploy:
-        type: boolean
-        default: false
     docker:
       - image: circleci/python:3.6-stretch
 
@@ -26,20 +22,24 @@ jobs:
       - run:
           name: Building Docker image
           command: docker build -t posthop-backend:latest .
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - run: |
+          echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 
-      - when:
-          condition: << parameters.deploy >>
-          steps:
-            - run:
-                name: Set up Docker
-                command: echo TODO
+      - run: gcloud auth configure-docker
+
+      - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
 
 workflows:
   version: 2.1
   build:
     jobs:
       - build:
-          deploy: false
           filters:
             branches:
               only: master
@@ -47,9 +47,16 @@ workflows:
   build_and_deploy:
     jobs:
       - build:
-          deploy: true
           filters:
             tags:
               only: /.+/
             branches:
-              ignore: /.*/
+                ignore: /.*/
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.+/
+            branches:
+                ignore: /.*/
