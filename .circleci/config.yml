@@ -24,7 +24,7 @@ jobs:
           command: docker build -t posthop-backend:latest .
   deploy:
     docker:
-      - image: docker:18
+      - image: remie/circleci-docker-gcloud
     steps:
       - run: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
@@ -32,6 +32,7 @@ jobs:
           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 
       - run: gcloud auth configure-docker
+
       - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
 
 workflows:
