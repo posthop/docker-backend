@@ -33,9 +33,9 @@ jobs:
 
       - run: gcloud auth configure-docker
 
-      - run: sudo systemctl start docker
+      - run: systemctl start docker
 
-      - run: sudo docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
+      - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
 
 workflows:
   version: 2.1
