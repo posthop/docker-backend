@@ -51,11 +51,11 @@ jobs:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
 
-      - run: docker tag posthop-backend:latest gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend@$(docker images posthop-backend:latest -q --no-trunc)
-      - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend@$(docker images posthop-backend:latest -q --no-trunc)
+      - run: docker tag posthop-backend:latest gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:${CIRCLE_TAG}
+      - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:${CIRCLE_TAG}
       - run: sudo apt-get install kubectl
       - run: gcloud container clusters get-credentials api-cluster
-      - run: kubectl set image deployment posthop-api posthop-api=gcr.io/cuhacking19/posthop-backend@$(docker images posthop-backend:latest -q --no-trunc)
+      - run: kubectl set image deployment posthop-api posthop-api=gcr.io/cuhacking19/posthop-backend:${CIRCLE_TAG}
 
 workflows:
   version: 2.1
