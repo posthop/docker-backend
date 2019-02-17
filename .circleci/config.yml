@@ -26,16 +26,14 @@ jobs:
     docker:
       - image: circleci/python:3.6-stretch
     steps:
-      - run: |
-          export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
-          echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
-          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - \
-          sudo apt-get update && sudo apt-get install google-cloud-sdk
+      - run: export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+      - run: echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+      - run: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+      - run: sudo apt-get update && sudo apt-get install google-cloud-sdk
 
-      - run: |
-          echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
-          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+      - run: echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+      - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      - run: gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 
       - run: gcloud auth configure-docker
 
