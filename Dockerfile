@@ -9,6 +9,8 @@ ADD build/ .
 
 RUN pip install -r requirements.txt
 
+ENV POSTHOP_HOST 0.0.0.0
+
 EXPOSE 5000
 
 CMD ["python", "app.py"]
