@@ -26,6 +26,8 @@ jobs:
     docker:
       - image: circleci/python:3.6-stretch
     steps:
+      - setup_remote_docker
+
       - run: echo "deb http://packages.cloud.google.com/apt cloud-sdk-stretch main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - run: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       - run: sudo apt-get update && sudo apt-get install google-cloud-sdk
@@ -36,7 +38,6 @@ jobs:
 
       - run: gcloud auth configure-docker
 
-      - run: sudo systemctl start docker
       - run: sudo docker tag posthop-backend:latest gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
       - run: sudo docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
 
