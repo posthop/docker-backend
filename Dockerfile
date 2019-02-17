@@ -7,6 +7,7 @@ ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 ADD build/ .
 
+EXPOSE 5000
 
 CMD ["python", "app.py"]
 
