@@ -22,10 +22,19 @@ jobs:
       - run:
           name: Building Docker image
           command: docker build -t posthop-backend:latest .
+      - run:
+          name: Saving image 
+          command: docker save -o image.tar posthop-backend
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
   deploy:
     docker:
       - image: circleci/python:3.6-stretch
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run: echo "deb http://packages.cloud.google.com/apt cloud-sdk-stretch main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - run: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       - run: sudo apt-get update && sudo apt-get install google-cloud-sdk
@@ -37,6 +46,10 @@ jobs:
       - run: gcloud auth configure-docker
 
       - setup_remote_docker
+
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
 
       - run: docker tag posthop-backend:latest gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
       - run: docker push gcr.io/${GOOGLE_PROJECT_ID}/posthop-backend:latest
